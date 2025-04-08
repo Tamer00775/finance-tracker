@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:latest
+    container_name: my_postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    networks:
+      - my_network
+
+  minio:
+    image: minio/minio
+    container_name: my_minio
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: dda853e3-4beb-4b05-afde-60b0dad159ed
+      MINIO_ROOT_BUCKET_NAME: check-bucket
+    command: server /data
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    networks:
+      - my_network
+
+  app:
+    build: .
+    image: myuser/finance_tracker:latest
+    container_name: finance_tracker
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydb
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_MINIO_URL: http://minio:9000
+      SPRING_MINIO_ACCESS_KEY: admin
+      SPRING_MINIO_SECRET_KEY: dda853e3-4beb-4b05-afde-60b0dad159ed
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - minio
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge

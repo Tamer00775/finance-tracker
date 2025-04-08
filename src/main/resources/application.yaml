@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: finance_tracker
+  datasource:
+    username: admin
+    password: admin
+    url: jdbc:postgresql://localhost:5432/mydb
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/master.xml
+
+minio:
+  url: ${SPRING_MINIO_URL:http://localhost:9000}
+  access-key: ${SPRING_MINIO_ACCESS_KEY:admin}
+  secret-key: ${SPRING_MINIO_SECRET_KEY:dda853e3-4beb-4b05-afde-60b0dad159ed}
+  bucket-name: ${SPRING_MINIO_ROOT_BUCKET_NAME:check-bucket}
+
+

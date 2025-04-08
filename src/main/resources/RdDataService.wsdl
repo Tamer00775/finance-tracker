@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://nitec.kz/ELicense/RDDataService" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://nitec.kz/ELicense/RDDataService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Веб-сервис интеграционного модуля</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://nitec.kz/ELicense/RDDataService">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="PutBusinessRequest">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Request" nillable="true" type="tns:BusinessRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="BusinessRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="RequestType" type="tns:BusinessRequestType" />
+              <s:element minOccurs="0" maxOccurs="1" name="PackageCode" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="PackageVersion" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ServiceCode" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="VariationCode" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ContentType" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="RequestBase" abstract="true">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="SessionId" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" name="SystemId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Data" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="MessageDate" type="s:dateTime" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="BusinessRequestType">
+        <s:restriction base="s:string">
+          <s:enumeration value="ChangeStatus" />
+          <s:enumeration value="TransferDemand" />
+          <s:enumeration value="TransferDocument" />
+          <s:enumeration value="TransferData" />
+          <s:enumeration value="TransferDecision" />
+          <s:enumeration value="TransferDataQuery" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="PutBusinessRequestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Response" nillable="true" type="tns:BusinessResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="BusinessResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Nikad" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Data" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ResponseBase" abstract="true">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="InquirySessionId" type="s1:guid" />
+          <s:element minOccurs="1" maxOccurs="1" name="SessionId" type="s1:guid" />
+          <s:element minOccurs="1" maxOccurs="1" name="MessageDate" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="Result" type="tns:ResponseResult" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorInfo" type="tns:ErrorInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="ResponseResult">
+        <s:restriction base="s:string">
+          <s:enumeration value="Success" />
+          <s:enumeration value="Error" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ErrorInfo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ErrorCode" type="tns:ErrorCode" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorDescription" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="ErrorCode">
+        <s:restriction base="s:string">
+          <s:enumeration value="100" />
+          <s:enumeration value="200" />
+          <s:enumeration value="300" />
+          <s:enumeration value="400" />
+          <s:enumeration value="500" />
+          <s:enumeration value="600" />
+          <s:enumeration value="700" />
+          <s:enumeration value="800" />
+          <s:enumeration value="900" />
+          <s:enumeration value="1000" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="PutSystemRequest">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Request" nillable="true" type="tns:SystemRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SystemRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="RequestType" type="tns:SystemRequestType" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="SystemRequestType">
+        <s:restriction base="s:string">
+          <s:enumeration value="RequestNikad" />
+          <s:enumeration value="RequestReference" />
+          <s:enumeration value="ReferenceChanged" />
+          <s:enumeration value="RequestDocumentNikad" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="PutSystemRequestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Response" nillable="true" type="tns:SystemResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="SystemResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Data" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="PutAppliedRequest">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Request" nillable="true" type="tns:AppliedRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="AppliedRequest">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:RequestBase">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="RequestType" type="tns:AppliedRequestType" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="AppliedRequestType">
+        <s:restriction base="s:string">
+          <s:enumeration value="DocumentSearch" />
+          <s:enumeration value="RequestSearch" />
+          <s:enumeration value="DemandData" />
+          <s:enumeration value="ChangeStatus" />
+          <s:enumeration value="TransferData" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="PutAppliedRequestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Response" nillable="true" type="tns:AppliedResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="AppliedResponse">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:ResponseBase">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Data" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="PutBusinessRequestSoapIn">
+    <wsdl:part name="parameters" element="tns:PutBusinessRequest" />
+  </wsdl:message>
+  <wsdl:message name="PutBusinessRequestSoapOut">
+    <wsdl:part name="parameters" element="tns:PutBusinessRequestResponse" />
+  </wsdl:message>
+  <wsdl:message name="PutSystemRequestSoapIn">
+    <wsdl:part name="parameters" element="tns:PutSystemRequest" />
+  </wsdl:message>
+  <wsdl:message name="PutSystemRequestSoapOut">
+    <wsdl:part name="parameters" element="tns:PutSystemRequestResponse" />
+  </wsdl:message>
+  <wsdl:message name="PutAppliedRequestSoapIn">
+    <wsdl:part name="parameters" element="tns:PutAppliedRequest" />
+  </wsdl:message>
+  <wsdl:message name="PutAppliedRequestSoapOut">
+    <wsdl:part name="parameters" element="tns:PutAppliedRequestResponse" />
+  </wsdl:message>
+  <wsdl:portType name="RDDataServiceSoap">
+    <wsdl:operation name="PutBusinessRequest">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Выполнить бизнес запрос</wsdl:documentation>
+      <wsdl:input message="tns:PutBusinessRequestSoapIn" />
+      <wsdl:output message="tns:PutBusinessRequestSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PutSystemRequest">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Выполнить системный запрос</wsdl:documentation>
+      <wsdl:input message="tns:PutSystemRequestSoapIn" />
+      <wsdl:output message="tns:PutSystemRequestSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PutAppliedRequest">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Выполнить прикладной запрос</wsdl:documentation>
+      <wsdl:input message="tns:PutAppliedRequestSoapIn" />
+      <wsdl:output message="tns:PutAppliedRequestSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="RDDataServiceSoap" type="tns:RDDataServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="PutBusinessRequest">
+      <soap:operation soapAction="http://nitec.kz/ELicense/RDDataService/PutBusinessRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PutSystemRequest">
+      <soap:operation soapAction="http://nitec.kz/ELicense/RDDataService/PutSystemRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PutAppliedRequest">
+      <soap:operation soapAction="http://nitec.kz/ELicense/RDDataService/PutAppliedRequest" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RDDataService">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Веб-сервис интеграционного модуля</wsdl:documentation>
+    <wsdl:port name="RDDataServiceSoap" binding="tns:RDDataServiceSoap">
+      <soap:address location="http://192.168.177.66:8888/RdDataService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
