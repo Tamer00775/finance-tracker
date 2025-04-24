@@ -3,7 +3,7 @@
 <include file="db/changelog/init.sql"/>
     <include file="db/changelog/category.sql"/>
     <include file="db/changelog/expense.sql"/>
-    <include file="db/changelog/expense_schedule.sql"/>
     <include file="db/changelog/expense_schedule_id_seq.sql"/>
+    <include file="db/changelog/expense_schedule.sql"/>
 
 </databaseChangeLog>
