@@ -25,5 +25,7 @@ public class Category {
     private String ru;
     @Column(name = "kk")
     private String kk;
+    @Column(name = "type")
+    private String type;
 
 }
