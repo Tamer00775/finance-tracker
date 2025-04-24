@@ -41,4 +41,7 @@ public class Expense {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "comment")
+    private String comment;
+
 }

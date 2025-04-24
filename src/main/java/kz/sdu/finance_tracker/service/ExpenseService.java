@@ -2,12 +2,16 @@ package kz.sdu.finance_tracker.service;
 
 import kz.sdu.finance_tracker.dto.ExpenseDto;
 import kz.sdu.finance_tracker.entity.Expense;
+import kz.sdu.finance_tracker.entity.ExpenseScheduler;
 import kz.sdu.finance_tracker.entity.User;
 import kz.sdu.finance_tracker.enums.OperationType;
+import kz.sdu.finance_tracker.enums.ScheduleType;
 import kz.sdu.finance_tracker.repository.CategoryRepository;
 import kz.sdu.finance_tracker.repository.ExpenseRepository;
+import kz.sdu.finance_tracker.repository.ExpenseSchedulerRepository;
 import kz.sdu.finance_tracker.repository.UserRepository;
 import kz.sdu.finance_tracker.utils.SecurityUtils;
+import liquibase.pro.packaged.E;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final ExpenseSchedulerRepository expenseSchedulerRepository;
 
     @Transactional
     public Expense save(ExpenseDto expenseDto) {
@@ -42,7 +47,20 @@ public class ExpenseService {
             userRepository.save(currentUser);
         }
         expense.setUser(currentUser);
-        return expenseRepository.save(expense);
+        Expense save = expenseRepository.save(expense);
+        if (expenseDto.isScheduled()) {
+            createExpenseSchedule(save, expenseDto.getScheduleType());
+        }
+
+        return save;
+    }
+
+    private void createExpenseSchedule(Expense save, ScheduleType scheduleType) {
+        ExpenseScheduler scheduler = new ExpenseScheduler();
+        scheduler.setExpense(save);
+        scheduler.setType(scheduleType.name());
+
+        expenseSchedulerRepository.save(scheduler);
     }
 
     private Expense toEntity(ExpenseDto expenseDto) {
@@ -55,6 +73,7 @@ public class ExpenseService {
         expense.setCreatedDate(LocalDateTime.now());
         expense.setCreatedBy("system");
         expense.setSum(expenseDto.getSum());
+        expense.setComment(expenseDto.getComment());
 
         return expense;
     }
@@ -71,6 +90,7 @@ public class ExpenseService {
         expense.setTransactionType(expenseDto.getTransactionType());
         expense.setOperationType(expenseDto.getOperationType());
         expense.setSum(expenseDto.getSum());
+        expense.setComment(expenseDto.getComment());
         expense.setCategory(categoryRepository.findByCode(expenseDto.getCategoryCode()).get());
         Expense save = expenseRepository.save(expense);
         User currentUser = SecurityUtils.getCurrentUser();
