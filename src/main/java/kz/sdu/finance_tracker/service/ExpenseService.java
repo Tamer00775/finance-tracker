@@ -6,6 +6,7 @@ import kz.sdu.finance_tracker.entity.ExpenseScheduler;
 import kz.sdu.finance_tracker.entity.User;
 import kz.sdu.finance_tracker.enums.OperationType;
 import kz.sdu.finance_tracker.enums.ScheduleType;
+import kz.sdu.finance_tracker.mapper.ExpenseMapper;
 import kz.sdu.finance_tracker.repository.CategoryRepository;
 import kz.sdu.finance_tracker.repository.ExpenseRepository;
 import kz.sdu.finance_tracker.repository.ExpenseSchedulerRepository;
@@ -13,6 +14,8 @@ import kz.sdu.finance_tracker.repository.UserRepository;
 import kz.sdu.finance_tracker.utils.SecurityUtils;
 import liquibase.pro.packaged.E;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,8 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final ExpenseSchedulerRepository expenseSchedulerRepository;
+
+    private final ExpenseMapper expenseMapper;
 
     @Transactional
     public Expense save(ExpenseDto expenseDto) {
@@ -66,7 +71,7 @@ public class ExpenseService {
     private Expense toEntity(ExpenseDto expenseDto) {
         Expense expense = new Expense();
         expense.setCategory(
-               categoryRepository.findByCode(expenseDto.getCategoryCode()).get()
+               categoryRepository.findByCode(expenseDto.getCategory().getCode()).get()
         );
         expense.setOperationType(expenseDto.getOperationType());
         expense.setTransactionType(expenseDto.getTransactionType());
@@ -91,7 +96,7 @@ public class ExpenseService {
         expense.setOperationType(expenseDto.getOperationType());
         expense.setSum(expenseDto.getSum());
         expense.setComment(expenseDto.getComment());
-        expense.setCategory(categoryRepository.findByCode(expenseDto.getCategoryCode()).get());
+        expense.setCategory(categoryRepository.findByCode(expenseDto.getCategory().getCode()).get());
         Expense save = expenseRepository.save(expense);
         User currentUser = SecurityUtils.getCurrentUser();
         if (!oldOperationType.equals(expenseDto.getOperationType())) {
@@ -117,8 +122,11 @@ public class ExpenseService {
         return save;
     }
 
-    public List<Expense> findAll() {
-        return expenseRepository.findAll();
+    public Page<ExpenseDto> findAll(Pageable pageable) {
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        return expenseRepository.findAllByUser(currentUser, pageable)
+                .map(expenseMapper::toDto);
     }
 
     public void deleteById(Long id) {
@@ -132,7 +140,7 @@ public class ExpenseService {
     public List<Expense> findAllByFilter(LocalDate from, LocalDate to) {
         return expenseRepository.findAllByCreatedDateBetween(
                 from.atStartOfDay(), to.atTime(23, 59, 59),
-                Sort.by(Sort.Direction.DESC, "createdDate") // Сортировка по убыванию
+                Sort.by(Sort.Direction.DESC, "createdDate")
         );
     }
 }

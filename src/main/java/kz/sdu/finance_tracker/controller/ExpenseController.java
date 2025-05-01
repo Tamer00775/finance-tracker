@@ -5,6 +5,8 @@ import kz.sdu.finance_tracker.entity.Expense;
 import kz.sdu.finance_tracker.repository.ExpenseRepository;
 import kz.sdu.finance_tracker.service.ExpenseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +22,8 @@ public class ExpenseController {
     private final ExpenseService expenseService;
 
     @GetMapping
-    public ResponseEntity<List<Expense>> findAll() {
-        return ResponseEntity.ok(expenseService.findAll());
+    public ResponseEntity<Page<ExpenseDto>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(expenseService.findAll(pageable));
     }
 
     @GetMapping("/filter")
