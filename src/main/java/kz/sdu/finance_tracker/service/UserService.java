@@ -1,15 +1,16 @@
 package kz.sdu.finance_tracker.service;
 
-import kz.sdu.finance_tracker.dto.LoginDto;
-import kz.sdu.finance_tracker.dto.UserDto;
-import kz.sdu.finance_tracker.dto.UserRegistrationDto;
+import kz.sdu.finance_tracker.dto.*;
 import kz.sdu.finance_tracker.entity.User;
+import kz.sdu.finance_tracker.entity.UserResetPassword;
 import kz.sdu.finance_tracker.enums.OperationType;
 import kz.sdu.finance_tracker.mapper.UserMapper;
 import kz.sdu.finance_tracker.repository.UserRepository;
+import kz.sdu.finance_tracker.repository.UserResetPasswordRepository;
 import kz.sdu.finance_tracker.security.JwtUtil;
 import kz.sdu.finance_tracker.security.PersonDetailsService;
 import kz.sdu.finance_tracker.utils.SecurityUtils;
+import liquibase.pro.packaged.R;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,8 @@ public class UserService {
     private final PersonDetailsService personDetailsService;
     private final JwtUtil jwtUtil;
     private final ExpenseService expenseService;
+    private final EmailService emailService;
+    private final UserResetPasswordRepository userResetPasswordRepository;
 
     @Transactional
     public UserRegistrationDto register(UserRegistrationDto userRegistrationDto) {
@@ -68,6 +72,10 @@ public class UserService {
         }
         User user = byEmail.get();
         user.setPassword(jwtUtil.generateToken(userRegistrationDto.getPassword()));
+        userRepository.save(user);
+    }
+
+    public void save(User user) {
         userRepository.save(user);
     }
 }
