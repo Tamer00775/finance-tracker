@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -11,10 +12,11 @@ import java.time.LocalDateTime;
 @ToString
 public class DebtorDto {
 
-    private String fullName;
+    private Long id;
+    private UserDto userDto;
+    private String debtorFullName;
     private Double sum;
-    private boolean isPayed;
-    private String category;
-    private LocalDateTime expiredDate;
-    private String comment;
+    private LocalDate expiredDate;
+    private String notes;
+    private boolean payed;
 }

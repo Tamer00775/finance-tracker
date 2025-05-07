@@ -5,5 +5,7 @@
     <include file="db/changelog/expense.sql"/>
     <include file="db/changelog/expense_schedule_id_seq.sql"/>
     <include file="db/changelog/expense_schedule.sql"/>
+    <include file="db/changelog/debtor.sql"/>
+    <include file="db/changelog/debtor_alter_table.sql"/>
 
 </databaseChangeLog>

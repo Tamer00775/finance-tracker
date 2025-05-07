@@ -1,0 +1,1 @@
+alter table debtor add column payed boolean default false;
