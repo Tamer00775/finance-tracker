@@ -2,13 +2,14 @@ package kz.sdu.finance_tracker.controller;
 
 import kz.sdu.finance_tracker.dto.LoginDto;
 import kz.sdu.finance_tracker.dto.UserRegistrationDto;
+import kz.sdu.finance_tracker.dto.UserResetDto;
+import kz.sdu.finance_tracker.dto.UserResetPasswordDto;
+import kz.sdu.finance_tracker.entity.UserResetPassword;
 import kz.sdu.finance_tracker.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -30,7 +31,19 @@ public class LoginController {
     }
 
     @PostMapping("/reset-password")
-    private ResponseEntity<UserRegistrationDto> resetPassword(@RequestBody UserRegistrationDto userRegistrationDto) {
-        return ResponseEntity.ok(userService.register(userRegistrationDto));
+    private ResponseEntity<HttpStatus> resetPassword(@RequestBody UserResetDto userResetDto) {
+        userService.resetPassword(userResetDto);
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/validate-token")
+    public ResponseEntity<Boolean> validateToken(@RequestParam String token) {
+        return ResponseEntity.ok(userService.validateToken(token));
+    }
+
+    @PostMapping("/reset-user-password")
+    public ResponseEntity<HttpStatus> resetUserPassword(@RequestBody UserResetPasswordDto userResetPasswordDto) {
+        userService.resetPassword(userResetPasswordDto);
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 }

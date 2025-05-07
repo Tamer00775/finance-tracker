@@ -75,6 +75,44 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void resetPassword(UserResetDto userResetDto) {
+        String email = userResetDto.getEmail();
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        if (byEmail.isEmpty()) {
+            throw new IllegalArgumentException("User is not present!");
+        }
+
+        User user = byEmail.get();
+        Random random = new Random();
+        int sixDigit = 100000 + random.nextInt(900000);
+        UserResetPassword userResetPassword = new UserResetPassword();
+        userResetPassword.setResetted(false);
+        userResetPassword.setUser(user);
+        userResetPassword.setTemporaryPassword(String.valueOf(sixDigit));
+
+        emailService.sendSimpleMessage(user.getEmail(), sixDigit);
+
+        userResetPasswordRepository.save(userResetPassword);
+    }
+
+    public boolean validateToken(String token) {
+        Optional<UserResetPassword> byTemporaryPasswordAndResettedFalse =
+                userResetPasswordRepository.findByTemporaryPasswordAndResettedFalse(token);
+        return byTemporaryPasswordAndResettedFalse.isPresent();
+    }
+
+    public void resetPassword(UserResetPasswordDto dto) {
+        Optional<UserResetPassword> byTemporaryPasswordAndResettedFalse =
+                userResetPasswordRepository.findByTemporaryPasswordAndResettedFalse(dto.getToken());
+        if (byTemporaryPasswordAndResettedFalse.isEmpty()) {
+            throw new IllegalArgumentException("Token is not present!");
+        }
+        UserResetPassword userResetPassword = byTemporaryPasswordAndResettedFalse.get();
+        User user = userResetPassword.getUser();
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        userRepository.save(user);
+    }
+
     public void save(User user) {
         userRepository.save(user);
     }
