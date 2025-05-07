@@ -9,8 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequestMapping("/api/budget-planning")
 @RequiredArgsConstructor
 @RestController
@@ -32,5 +30,10 @@ public class BudgetPlanningController {
     public ResponseEntity<BudgetPlanningDto> update(@PathVariable Long id,
             @RequestBody BudgetPlanningDto dto) {
         return ResponseEntity.ok(budgetPlanningService.updateById(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable Long id) {
+        budgetPlanningService.deleteById(id);
     }
 }

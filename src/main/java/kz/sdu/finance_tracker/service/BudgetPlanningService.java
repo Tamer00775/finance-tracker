@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -42,6 +42,13 @@ public class BudgetPlanningService {
             BudgetPlanning budgetPlanning = byId.get();
             Long total = budgetPlanning.getCurrentSum() + budgetPlanningDto.getCurrentSum();
             budgetPlanning.setCurrentSum(total);
+            if (Objects.nonNull(budgetPlanningDto.getPlanSum())) {
+                budgetPlanning.setPlanSum(budgetPlanningDto.getPlanSum());
+            }
+            if (Objects.nonNull(budgetPlanningDto.getNameRu())) {
+                budgetPlanning.setNameRu(budgetPlanningDto.getNameRu());
+            }
+
             double d = (total * 100) / budgetPlanning.getPlanSum();
             budgetPlanning.setPercentage(d);
             BudgetPlanning save = budgetPlanningRepository.save(budgetPlanning);
@@ -56,5 +63,9 @@ public class BudgetPlanningService {
     public Page<BudgetPlanningDto> findAll(Pageable pageable) {
         return budgetPlanningRepository.findAll(pageable)
                 .map(budgetPlanningMapper::toDto);
+    }
+
+    public void deleteById(Long id) {
+        budgetPlanningRepository.deleteById(id);
     }
 }
