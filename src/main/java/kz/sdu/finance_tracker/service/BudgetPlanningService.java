@@ -2,6 +2,7 @@ package kz.sdu.finance_tracker.service;
 
 import kz.sdu.finance_tracker.dto.BudgetPlanningDto;
 import kz.sdu.finance_tracker.entity.BudgetPlanning;
+import kz.sdu.finance_tracker.entity.User;
 import kz.sdu.finance_tracker.mapper.BudgetPlanningMapper;
 import kz.sdu.finance_tracker.repository.BudgetPlanningRepository;
 import kz.sdu.finance_tracker.utils.SecurityUtils;
@@ -61,7 +62,8 @@ public class BudgetPlanningService {
 
     @Transactional
     public Page<BudgetPlanningDto> findAll(Pageable pageable) {
-        return budgetPlanningRepository.findAll(pageable)
+        User user = SecurityUtils.getCurrentUser();
+        return budgetPlanningRepository.findAllByUser(user, pageable)
                 .map(budgetPlanningMapper::toDto);
     }
 
